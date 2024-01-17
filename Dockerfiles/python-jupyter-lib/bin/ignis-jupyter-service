@@ -1,0 +1,7 @@
+#!/bin/env bash
+
+if [ "$(id -u)" != "0" ]; then
+  ALLOW_ROOT="--allow-root"
+fi
+
+jupyter lab ${ALLOW_ROOT} --no-browser --sock ${IGNIS_JOB_SOCKETS}/jupyter.sock --LabApp.token='' "$@"
