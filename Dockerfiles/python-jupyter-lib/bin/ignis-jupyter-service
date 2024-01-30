@@ -1,7 +1,24 @@
 #!/bin/env bash
 
-if [ "$(id -u)" != "0" ]; then
+if [ "$(id -u)" == "0" ]; then
   ALLOW_ROOT="--allow-root"
 fi
 
-jupyter lab ${ALLOW_ROOT} --no-browser --sock ${IGNIS_JOB_SOCKETS}/jupyter.sock --LabApp.token='' "$@"
+if [ -z "${JUPYTER_DATA_DIR}" ]; then
+  export JUPYTER_DATA_DIR="${IGNIS_SERVICE_DIR}/jupyter/data"
+  mkdir -p -m 700 ${JUPYTER_DATA_DIR}
+fi
+
+if [ -z "${JUPYTER_CONFIG_DIR}" ]; then
+  export JUPYTER_CONFIG_DIR="${IGNIS_SERVICE_DIR}/jupyter/config"
+  mkdir -p -m 700 ${JUPYTER_CONFIG_DIR}
+fi
+
+if [ -z "${JUPYTER_RUNTIME_DIR}" ]; then
+  export JUPYTER_RUNTIME_DIR="${IGNIS_SERVICE_DIR}/jupyter/runtime"
+  mkdir -p -m 700 ${JUPYTER_RUNTIME_DIR}
+fi
+
+jupyter lab ${ALLOW_ROOT} --no-browser --sock ${IGNIS_JOB_SOCKETS}/jupyter.sock \
+            --ServerApp.allow_remote_access='True' --NotebookApp.allow_origin='*' \
+            --IdentityProvider.token='' "$@"
