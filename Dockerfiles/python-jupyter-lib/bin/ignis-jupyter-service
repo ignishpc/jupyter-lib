@@ -19,6 +19,11 @@ if [ -z "${JUPYTER_RUNTIME_DIR}" ]; then
   mkdir -p -m 700 ${JUPYTER_RUNTIME_DIR}
 fi
 
+if [ -z "${IPYTHONDIR}" ]; then
+  export IPYTHONDIR="${IGNIS_SERVICE_DIR}/jupyter/ipython"
+  mkdir -p -m 700 ${IPYTHONDIR}
+fi
+
 jupyter lab ${ALLOW_ROOT} --no-browser --sock ${IGNIS_JOB_SOCKETS}/jupyter.sock \
             --ServerApp.allow_remote_access='True' --NotebookApp.allow_origin='*' \
             --IdentityProvider.token='' "$@"
